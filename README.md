@@ -1,61 +1,175 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Kinde Authentication Starter Kit
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A complete Laravel starter kit demonstrating authentication integration with [Kinde](https://kinde.com), featuring modern UI with Tailwind CSS and comprehensive authentication flows.
 
-## About Laravel
+## ✨ Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- 🔐 **Complete OAuth 2.0 Authentication** with Kinde
+- 🎨 **Modern UI** with Tailwind CSS v4
+- 🛡️ **Route Protection** with custom middleware  
+- 👤 **User Profile Management** with permissions and organizations
+- 🚀 **Laravel 11** with Vite integration
+- 📱 **Responsive Design** for mobile and desktop
+- 🔧 **Service Provider** for dependency injection
+- ✅ **Error Handling** with user-friendly messages
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Prerequisites
 
-## Learning Laravel
+- PHP 8.1 or higher
+- Composer
+- Node.js and npm
+- A [Kinde](https://kinde.com) account
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Installation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Koosha-Owji/kinde-laravel-starter-kit.git
+   cd kinde-laravel-starter-kit
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Laravel Sponsors
+3. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. **Configure Kinde credentials**
+   
+   Update your `.env` file with your Kinde application details:
+   ```env
+   KINDE_DOMAIN=https://yourdomain.kinde.com
+   KINDE_CLIENT_ID=your_client_id
+   KINDE_CLIENT_SECRET=your_client_secret
+   KINDE_REDIRECT_URL=http://localhost:8000/auth/callback
+   KINDE_POST_LOGOUT_REDIRECT_URL=http://localhost:8000
+   ```
 
-### Premium Partners
+5. **Build assets and start the server**
+   ```bash
+   npm run dev
+   php artisan serve
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+6. **Visit your application**
+   
+   Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-## Contributing
+## 🔧 Configuration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Kinde Application Setup
 
-## Code of Conduct
+1. Create a new application in your [Kinde dashboard](https://app.kinde.com)
+2. Set the following URLs in your Kinde app settings:
+   - **Allowed callback URLs**: `http://localhost:8000/auth/callback`
+   - **Allowed logout redirect URLs**: `http://localhost:8000`
+3. Copy your credentials to the `.env` file
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📁 Project Structure
 
-## Security Vulnerabilities
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── AuthController.php      # Authentication routes handler
+│   └── Middleware/
+│       └── KindeAuth.php           # Route protection middleware
+├── Providers/
+│   └── KindeServiceProvider.php    # Service container registration
+└── Services/
+    └── KindeService.php            # Kinde SDK wrapper service
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+resources/
+├── css/
+│   └── app.css                     # Tailwind CSS configuration
+└── views/
+    ├── layouts/
+    │   └── app.blade.php           # Main layout template
+    ├── welcome.blade.php           # Landing page
+    └── dashboard.blade.php         # Protected dashboard
 
-## License
+routes/
+└── web.php                        # Application routes
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🛠️ Available Routes
+
+| Route | Method | Description | Protected |
+|-------|--------|-------------|-----------|
+| `/` | GET | Home/Welcome page | No |
+| `/auth/login` | GET | Redirect to Kinde login | No |
+| `/auth/register` | GET | Redirect to Kinde registration | No |
+| `/auth/callback` | GET | OAuth callback handler | No |
+| `/auth/logout` | GET | Logout and redirect to Kinde | No |
+| `/dashboard` | GET | User dashboard | Yes |
+
+## 🧩 Key Components
+
+### KindeService
+
+The main service class providing:
+- User authentication status
+- User profile data
+- Permissions and organizations
+- Custom claims access
+- URL generation for auth flows
+
+### KindeAuth Middleware
+
+Protects routes requiring authentication:
+- Redirects unauthenticated users to login
+- Stores intended URL for post-login redirect
+- Handles both web and API requests
+
+### AuthController
+
+Handles all authentication flows:
+- Login/Register redirects
+- OAuth callback processing  
+- Error handling
+- Dashboard display
+
+## 🎨 Customization
+
+### Styling
+
+The starter kit uses Tailwind CSS v4. Customize styles in:
+- `resources/css/app.css` - Main stylesheet
+- Blade templates - Component-specific styles
+
+### Adding Features
+
+Extend the starter kit by:
+1. Adding new routes in `routes/web.php`
+2. Creating controllers for your features
+3. Using the `KindeService` for user data
+4. Applying `kinde.auth` middleware for protection
+
+## 📚 Documentation
+
+- [Kinde Documentation](https://kinde.com/docs)
+- [Kinde PHP SDK](https://github.com/kinde-oss/kinde-auth-php)
+- [Laravel Documentation](https://laravel.com/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 🆘 Support
+
+- [Kinde Community](https://kinde.com/community)
+- [GitHub Issues](https://github.com/Koosha-Owji/kinde-laravel-starter-kit/issues)
+- [Kinde Documentation](https://kinde.com/docs)
