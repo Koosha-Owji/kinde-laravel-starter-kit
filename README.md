@@ -164,21 +164,6 @@ Handles all authentication flows:
 - Logout handling
 - Protected route access
 
-## 🎨 Styling
-
-The starter kit includes an optional Kinde design system (`resources/css/kinde.css`) that provides:
-
-- Modern, responsive design
-- CSS custom properties for easy theming
-- Component classes for buttons, cards, navigation
-- Mobile-first responsive breakpoints
-
-**To use your own styling:**
-
-1. Remove `kinde.css` from the Vite configuration
-2. Delete `resources/css/kinde.css`
-3. Update HTML classes in Blade templates
-
 ## 🔧 Configuration
 
 All Kinde configuration is stored in `config/services.php`:
