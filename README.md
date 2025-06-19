@@ -6,11 +6,8 @@ A complete Laravel authentication starter kit using [Kinde](https://kinde.com) f
 
 - **🔐 Complete OAuth2 Authentication Flow** - Login, registration, logout with Kinde
 - **🛡️ Route Protection** - Middleware-based authentication for protected routes
-- **👤 User Profile Management** - Access user data, permissions, and organizations
-- **🎨 Beautiful UI** - Optional Kinde design system with responsive layout
 - **⚡ Laravel Integration** - Native Laravel service container and middleware
 - **🔧 Flexible Architecture** - Simplified service with direct SDK access when needed
-- **📱 Mobile Responsive** - Works perfectly on all device sizes
 
 ## 🚀 Quick Start
 
@@ -87,8 +84,8 @@ config/
 
 resources/
 ├── css/
-│   ├── app.css                    # Tailwind CSS
-│   └── kinde.css                  # Kinde design system (optional)
+│   ├── app.css                    # Application styles
+│   └── kinde.css                  # Kinde design system
 └── views/
     ├── layouts/
     │   └── app.blade.php          # Main layout template
@@ -115,6 +112,13 @@ routes/
 ### KindeService
 
 The main service class providing essential authentication functionality:
+
+- User authentication status checking
+- User profile retrieval
+- Basic permission checking
+- OAuth URL generation (login/register)
+- Logout handling
+- Direct SDK access for advanced features
 
 ```php
 $kindeService = app(KindeService::class);
