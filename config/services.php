@@ -35,6 +35,15 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Kinde Authentication Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This configuration section contains the settings required for Kinde
+    | authentication integration. These values should be obtained from your
+    | Kinde application dashboard and stored in your .env file.
+    */
     'kinde' => [
         'domain' => env('KINDE_DOMAIN'),
         'client_id' => env('KINDE_CLIENT_ID'),

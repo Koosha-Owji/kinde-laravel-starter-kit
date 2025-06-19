@@ -5,14 +5,46 @@ namespace App\Services;
 use Kinde\KindeSDK\KindeClientSDK;
 use Kinde\KindeSDK\Configuration;
 use Kinde\KindeSDK\Sdk\Enums\GrantType;
-use Kinde\KindeSDK\Sdk\Storage\Storage;
 use Exception;
 
+/**
+ * KindeService - Laravel wrapper for Kinde PHP SDK
+ * 
+ * This service provides a simplified interface to the Kinde PHP SDK for Laravel applications.
+ * It handles the most common authentication operations while providing access to the full
+ * SDK when needed for advanced use cases.
+ * 
+ * Key Features:
+ * - User authentication status checking
+ * - User profile retrieval
+ * - OAuth URL generation (login/register)
+ * - Logout handling
+ * - Permission checking
+ * - Direct SDK access for advanced operations
+ * 
+ * 
+ * @package App\Services
+ */
 class KindeService
 {
+    /**
+     * The Kinde SDK client instance
+     */
     protected KindeClientSDK $kindeClient;
+    
+    /**
+     * The Kinde SDK configuration instance
+     */
     protected Configuration $kindeConfig;
 
+    /**
+     * Create a new KindeService instance
+     * 
+     * Initializes the Kinde SDK with configuration from Laravel's config system.
+     * The configuration is read from config/services.php under the 'kinde' key.
+     * 
+     * @throws Exception If required configuration is missing
+     */
     public function __construct()
     {
         $this->kindeConfig = new Configuration();
@@ -32,15 +64,12 @@ class KindeService
     }
 
     /**
-     * Get the Kinde client instance
-     */
-    public function getClient(): KindeClientSDK
-    {
-        return $this->kindeClient;
-    }
-
-    /**
      * Check if user is authenticated
+     * 
+     * Determines whether the current user has a valid authentication session
+     * with Kinde. This checks for the presence and validity of access tokens.
+     * 
+     * @return bool True if user is authenticated, false otherwise
      */
     public function isAuthenticated(): bool
     {
@@ -49,6 +78,12 @@ class KindeService
 
     /**
      * Get the authenticated user profile
+     * 
+     * Retrieves the profile information for the currently authenticated user.
+     * Returns null if the user is not authenticated.
+     * 
+     * 
+     * @return object|null User profile object or null if not authenticated
      */
     public function getUser(): ?object
     {
@@ -64,14 +99,6 @@ class KindeService
                 $userData = (object) $userData;
             }
             
-            // If picture is missing from user details, try to get it from claims
-            if (empty($userData->picture)) {
-                $claims = $this->getUserClaims();
-                if (isset($claims['picture'])) {
-                    $userData->picture = $claims['picture'];
-                }
-            }
-            
             return $userData;
         } catch (Exception $e) {
             return null;
@@ -79,73 +106,14 @@ class KindeService
     }
 
     /**
-     * Get user permissions
-     */
-    public function getUserPermissions(): array
-    {
-        if (!$this->isAuthenticated()) {
-            return [];
-        }
-
-        try {
-            $result = $this->kindeClient->getPermissions();
-            // SDK returns: ["orgCode" => "org_1234", "permissions" => ["create:todos", "update:todos"]]
-            return $result['permissions'] ?? [];
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
-    /**
-     * Get user claims from ID token
-     */
-    public function getUserClaims(): array
-    {
-        if (!$this->isAuthenticated()) {
-            return [];
-        }
-
-        try {
-            $storage = Storage::getInstance();
-            $decodedToken = $storage->getDecodedIdToken();
-            return $decodedToken ? (array) $decodedToken : [];
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
-    /**
-     * Get user organizations
-     */
-    public function getOrganizations(): array
-    {
-        if (!$this->isAuthenticated()) {
-            return [];
-        }
-
-        try {
-            $result = $this->kindeClient->getUserOrganizations();
-            // SDK returns: ["orgCodes" => ["org_8de8711f46a", "org_820c0f318de"]]
-            
-            if (isset($result['orgCodes']) && is_array($result['orgCodes'])) {
-                $organizations = [];
-                foreach ($result['orgCodes'] as $orgCode) {
-                    $organizations[] = [
-                        'code' => $orgCode,
-                        'name' => $orgCode // We only have the code from SDK
-                    ];
-                }
-                return $organizations;
-            }
-            
-            return [];
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
-    /**
      * Get login URL
+     * 
+     * Generates a URL to redirect users to Kinde's hosted login page.
+     * After successful authentication, users will be redirected back to
+     * the configured callback URL.
+     * 
+     * @param array $additionalParams Optional additional parameters to include in the login URL
+     * @return string The login URL to redirect users to
      */
     public function getLoginUrl(array $additionalParams = []): string
     {
@@ -155,6 +123,13 @@ class KindeService
 
     /**
      * Get register URL
+     * 
+     * Generates a URL to redirect users to Kinde's hosted registration page.
+     * After successful registration, users will be redirected back to
+     * the configured callback URL.
+     * 
+     * @param array $additionalParams Optional additional parameters to include in the registration URL
+     * @return string The registration URL to redirect users to
      */
     public function getRegisterUrl(array $additionalParams = []): string
     {
@@ -163,7 +138,16 @@ class KindeService
     }
 
     /**
-     * Perform logout - this will redirect and exit
+     * Perform logout
+     * 
+     * Logs the user out of both the application and Kinde.
+     * This method will redirect to Kinde's logout endpoint, which will
+     * clear the user's session and then redirect to the configured
+     * post-logout URL.
+     * 
+     * Note: This method performs a redirect and does not return.
+     * 
+     * @return void
      */
     public function logout(): void
     {
@@ -172,6 +156,12 @@ class KindeService
 
     /**
      * Handle the OAuth callback
+     * 
+     * Processes the OAuth2 authorization code received from Kinde's callback
+     * and exchanges it for access and ID tokens. This method should be called
+     * in your callback route handler.
+     * 
+     * @return bool True if the callback was handled successfully and user is now authenticated
      */
     public function handleCallback(): bool
     {
@@ -185,6 +175,14 @@ class KindeService
 
     /**
      * Check if user has a specific permission
+     * 
+     * Determines whether the currently authenticated user has been granted
+     * a specific permission. Returns false if the user is not authenticated
+     * or if the permission check fails.
+     * 
+     * 
+     * @param string $permission The permission to check (e.g., 'create:posts')
+     * @return bool True if user has the permission, false otherwise
      */
     public function hasPermission(string $permission): bool
     {
@@ -194,7 +192,6 @@ class KindeService
 
         try {
             $result = $this->kindeClient->getPermission($permission);
-            // SDK returns: ["orgCode" => "org_1234", "isGranted" => true]
             return $result['isGranted'] ?? false;
         } catch (Exception $e) {
             return false;
@@ -202,46 +199,19 @@ class KindeService
     }
 
     /**
-     * Get a specific claim value
+     * Get the configured Kinde client for direct SDK access
+     * 
+     * Returns the underlying Kinde PHP SDK client for advanced operations
+     * not covered by this service. The client is already configured
+     * with your application settings.
+     * 
+     * Use this when you need functionality listed in the Kinde PHP SDK documentation.
+     * https://docs.kinde.com/developer-tools/sdks/backend/php-sdk/#kindesdk-methods
+     * 
+     * 
+     * @return KindeClientSDK The configured Kinde PHP SDK client
      */
-    public function getClaim(string $claimName, string $tokenType = 'access_token'): mixed
-    {
-        if (!$this->isAuthenticated()) {
-            return null;
-        }
-
-        try {
-            $result = $this->kindeClient->getClaim($claimName, $tokenType);
-            // SDK returns: ["name" => "aud", "value" => ["api.yourapp.com"]]
-            return $result['value'] ?? null;
-        } catch (Exception $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Get current organization details
-     */
-    public function getOrganization(): ?array
-    {
-        if (!$this->isAuthenticated()) {
-            return null;
-        }
-
-        try {
-            $result = $this->kindeClient->getOrganization();
-            // SDK returns: ["orgCode" => "org_1234"]
-            return $result;
-        } catch (Exception $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Direct access to the raw Kinde client for advanced usage
-     * This allows developers to access any SDK method not wrapped here
-     */
-    public function getRawClient(): KindeClientSDK
+    public function client(): KindeClientSDK
     {
         return $this->kindeClient;
     }
