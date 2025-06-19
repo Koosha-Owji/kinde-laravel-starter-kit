@@ -214,7 +214,7 @@ if ($kindeService->hasPermission('admin:users')) {
 ### Advanced SDK Usage
 
 ```php
-// Access full Kinde SDK functionality
+// Access full Kinde PHP SDK functionality
 $client = $kindeService->client();
 
 // Get user organizations
@@ -269,31 +269,3 @@ Update your Kinde app settings with production URLs:
 
 - **Allowed callback URLs**: `https://yourapp.com/auth/callback`
 - **Allowed logout redirect URLs**: `https://yourapp.com`
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is open-sourced software licensed under the [MIT license](LICENSE).
-
-## 🔗 Links
-
-- [Kinde Documentation](https://kinde.com/docs)
-- [Kinde PHP SDK](https://docs.kinde.com/developer-tools/sdks/backend/php-sdk/)
-- [Laravel Documentation](https://laravel.com/docs)
-
-## 💬 Support
-
-- [Kinde Community](https://kinde.com/community)
-- [Kinde Help Center](https://kinde.com/docs)
-- [Laravel Community](https://laravel.com/community)
-
----
-
-Built with ❤️ using [Kinde](https://kinde.com) and [Laravel](https://laravel.com)
