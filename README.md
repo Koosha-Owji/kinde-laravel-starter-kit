@@ -2,13 +2,6 @@
 
 A complete Laravel authentication starter kit using [Kinde](https://kinde.com) for secure, modern user authentication. This project provides a ready-to-use foundation for Laravel applications that need robust authentication with minimal setup.
 
-## ✨ Features
-
-- **🔐 Complete OAuth2 Authentication Flow** - Login, registration, logout with Kinde
-- **🛡️ Route Protection** - Middleware-based authentication for protected routes
-- **⚡ Laravel Integration** - Native Laravel service container and middleware
-- **🔧 Flexible Architecture** - Simplified service with direct SDK access when needed
-
 ## 🚀 Quick Start
 
 ### Prerequisites
